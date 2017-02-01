@@ -18,8 +18,22 @@ gulp.task('watch', function() {
         parsers: {
           js: {
             jsParser: function(js, opts, url) {
-              console.log(js);
-              console.log(plugins)l
+              custom_stream('riot', js)
+                .pipe(plugins.jshint())
+                .pipe(plugins.notify(function(file) {
+                  if (!file.jshint.success) {
+                    var errors = file.jshint.results.map(function(result) {
+                      if (result.error) {
+                        return '(' + result.error.line + ':' + result.error.character + ') ' + result.error.reason;
+                      }
+                    }).join('\n');
+                    var hint = '\nNote line number is relative to script element in riot tag\n';
+                    return hint + url + ' (' + file.jshint.results.length + ' errors)\n' + errors;
+                  } else {
+                    return false;
+                  }
+                }));
+
               return js;
             }
           },
@@ -44,3 +58,21 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['watch']);
+
+// Create a custom stream, from a string
+function custom_stream(file, string) {
+  var customStream = require('stream').Readable({ objectMode: true});
+
+  customStream._read = function() {
+    this.push(new plugins.util.File({
+      cwd: '',
+      base: '',
+      path: file,
+      contents: new Buffer(string)
+    }));
+
+    this.push(null);
+  }
+
+  return customStream;
+}

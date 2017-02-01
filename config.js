@@ -5,7 +5,10 @@ module.exports = {
   gulpLoadPlugins: {
     lazy: false,
     scope: ['dependencies', 'devDependencies', 'peerDependencies'],
-    pattern: ['gulp-*', 'gulp.*'],
+    pattern: ['gulp-*', 'gulp.*', 'gutil'],
+    rename: {
+      'jshint': 'jslint'
+    },
     DEBUG: false,
   },
 };

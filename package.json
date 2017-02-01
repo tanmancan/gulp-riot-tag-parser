@@ -26,6 +26,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
+    "gutil": "^1.6.4",
     "jshint": "^2.9.4",
     "node-sass": "^3.10.0",
     "riot": "^2.6.2"
