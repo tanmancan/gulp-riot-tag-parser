@@ -4,6 +4,7 @@
   <style scoped>
     body {
       background: blue;
+      color: red;
       h1 {
         background: red;
         color: pink;

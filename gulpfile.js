@@ -27,7 +27,7 @@ gulp.task('watch', function() {
                         return '(' + result.error.line + ':' + result.error.character + ') ' + result.error.reason;
                       }
                     }).join('\n');
-                    var hint = '\nNote line number is relative to script element in riot tag\n';
+                    var hint = '\nNote line number is relative to script tag in riot.js tag\n';
                     return hint + url + ' (' + file.jshint.results.length + ' errors)\n' + errors;
                   } else {
                     return false;
@@ -45,13 +45,28 @@ gulp.task('watch', function() {
                 omitSourceMapUrl: true,
                 outputStyle: 'compact',
               };
-              var compiled = sass.renderSync(opts);
+              var compiled;
+
+              try {
+                compiled = sass.renderSync(opts);
+              }catch(err) {
+                custom_stream('error', css)
+                  .pipe(plugins.notify(function(file) {
+                    var hint = '\nNote line number is relative to style tag inside the riot.js tag\n';
+                    var file = 'Error: ' + url + '\n';
+                    return hint + file + '(' + err.line + ':' + err.column + ') ' + err.message + '\n';
+                  }));
+                return css;
+              }
               return compiled.css + '';
             }
           }
         }
       }))
-      .pipe(gulp.dest(tagBuild));
+      .pipe(gulp.dest(tagBuild))
+      .pipe(plugins.notify(function(file) {
+        return 'Tag compiled to ' + file.path;
+      }));
   });
 
 });
