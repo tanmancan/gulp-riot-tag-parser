@@ -46,7 +46,6 @@ gulp.task('watch', function() {
                 outputStyle: 'compact',
               };
               var compiled = sass.renderSync(opts);
-              console.log(tag, css);
               return compiled.css + '';
             }
           }
